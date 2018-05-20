@@ -1,8 +1,12 @@
+from __future__ import print_function
 import pytube
 from pytube import YouTube
-yt = YouTube('https://www.youtube.com/watch?v=q64BK3UH0mI')
+import nltk.data
+
+yt = YouTube('https://www.youtube.com/watch?v=NiKtZgImdlY')
 caption = yt.captions.get_by_language_code('en')
 caption = caption.generate_srt_captions()
+
 
 def delTags(caption):
     start = 0
@@ -52,12 +56,30 @@ def lineNumbers(caption):
         count += 1
     return captionString
     
+
 if '.' in caption:
-    print 'Subtitles are not auto generated'
+    print('Subtitles are not auto generated, and may only work for certain videos')
+    caption = delTimeStamps(list(caption))
+    caption = lineNumbers(list(caption))
+    print(caption)
 else:
     caption = delTimeStamps(list(caption))
-    print caption
-    caption = delTags(list(caption))
-    print caption
     caption = lineNumbers(list(caption))
-    print caption
+    print(caption)
+
+def word_count(string):
+    counts = dict()
+    words = caption.split()
+
+    for word in words:
+        if word in counts:
+            counts[word] += 1
+        else:
+            counts[word] = 1
+
+    return counts
+
+
+tokens = nltk.word_tokenize(caption)
+#sent_detector = nltk.data.load('tokenizers/punkt/english.pickle')
+#print('\n-----\n'.join(sent_detector.tokenize(caption.strip())))
